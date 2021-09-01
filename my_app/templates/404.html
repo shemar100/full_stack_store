@@ -1,0 +1,11 @@
+{% extends 'home.html' %}
+
+{% block container %}
+    <div class="top-pad">
+        <h3> Invlaid destination - Go Home!</h3>
+        <h4> 
+            <a href="{{ url_for('catalog.home') }}">Home</a>
+        </h4>
+    </div>
+    
+{% endblock %}
