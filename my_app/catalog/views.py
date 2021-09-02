@@ -104,7 +104,7 @@ def create_category():
         return redirect(url_for('catalog.category', id=category.id))
     
     if form.errors:
-        flash(form.errors)
+        flash(form.errors, 'danger')
     
     return render_template('category-create.html', form=form)  
 

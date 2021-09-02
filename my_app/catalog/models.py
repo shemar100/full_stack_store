@@ -1,8 +1,8 @@
 from my_app import db
 from flask_wtf import FlaskForm
 from decimal import Decimal
-from wtforms import StringField, DecimalField, SelectField
-from wtforms.validators import InputRequired, NumberRange
+from wtforms import StringField, DecimalField, SelectField, TextField
+from wtforms.validators import InputRequired, NumberRange, ValidationError
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -51,6 +51,21 @@ class ProductForm(NameForm):
     ])
     category = CategoryField('Category', validators=[InputRequired()], coerce=int)
 
+def check_duplicate_category(case_sensitive=True):
+    def _check_duplicate(form, field):
+        if case_sensitive:
+            res = Category.query.filter(
+                Category.name.like('%' + field.data + '%')
+            ).first()
+        else:
+            res = Category.query.filter(
+                Category.name.like('%' + field.data + '%')
+            ).first()
+        if res:
+            raise ValidationError(f'Category named {field.data} already exists')
+    return _check_duplicate
+
+
 class CategoryForm(NameForm):
-    pass
+    name = TextField('Name', validators=[InputRequired(), check_duplicate_category()])
 
