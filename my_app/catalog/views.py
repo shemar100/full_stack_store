@@ -1,9 +1,11 @@
 from flask import request, jsonify, Blueprint, render_template, flash, redirect
 from flask.helpers import url_for
+from flask_wtf import csrf
 from my_app import db, app, redis
 from my_app.catalog.models import Product, Category
 from sqlalchemy.orm.util import join
-from functools import wraps
+from my_app.catalog.models import ProductForm
+#from functools import wraps
 
 catalog = Blueprint('catalog', __name__)
 
@@ -54,19 +56,23 @@ def recent_products():
     
 @catalog.route('/product-create', methods=['POST','GET']) 
 def create_product():
+    form = ProductForm(csrf_enabled=False)
+
+    categories = [(c.id, c.name) for c in Category.query.all()]
+    form.category.choices = categories
+
     if request.method == 'POST':
-        name = request.form.get('name') 
-        price = request.form.get('price') 
-        categ_name = request.form.get('category') 
-        category = Category.query.filter_by(name=categ_name).first() 
-        if not category: 
-            category = Category(categ_name) 
+        name = form.name.data
+        price = form.price.data 
+        category = Category.query.get_or_404(
+            form.category.data
+        )
         product = Product(name, price, category) 
         db.session.add(product) 
         db.session.commit() 
         flash(f'The product {name} has been created', 'success')
         return redirect(url_for('catalog.product', id=product.id)) 
-    return render_template('product-create.html')
+    return render_template('product-create.html', form=form)
 
 @catalog.route('/product-search')
 @catalog.route('/product-search/<int:page>')
