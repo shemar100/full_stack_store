@@ -4,7 +4,7 @@ from flask_wtf import csrf
 from my_app import db, app, redis
 from my_app.catalog.models import Product, Category
 from sqlalchemy.orm.util import join
-from my_app.catalog.models import ProductForm
+from my_app.catalog.models import ProductForm, CategoryForm
 #from functools import wraps
 
 catalog = Blueprint('catalog', __name__)
@@ -95,13 +95,21 @@ def product_search(page=1):
     
 
 
-@catalog.route('/category-create', methods=['POST',]) 
+@catalog.route('/category-create', methods=['POST','GET']) 
 def create_category(): 
-    name = request.form.get('name') 
-    category = Category(name) 
-    db.session.add(category) 
-    db.session.commit() 
-    return render_template('category.html', category=category)  
+    form = CategoryForm(csrf_enabled=False)
+    if form.validate_on_submit():
+        name = request.form.get('name') 
+        category = Category(name) 
+        db.session.add(category) 
+        db.session.commit()
+        flash(f'Category {name} created successfully', 'success')
+        return redirect(url_for('catalog.category', id=category.id))
+    
+    if form.errors:
+        flash(form.errors)
+    
+    return render_template('category-create.html', form=form)  
 
 @catalog.route('/categories') 
 def categories(): 
