@@ -61,7 +61,7 @@ def create_product():
     categories = [(c.id, c.name) for c in Category.query.all()]
     form.category.choices = categories
 
-    if request.method == 'POST' and form.validate():
+    if form.validate_on_submit():
         name = form.name.data
         price = form.price.data 
         category = Category.query.get_or_404(
