@@ -58,9 +58,6 @@ def recent_products():
 def create_product():
     form = ProductForm(csrf_enabled=False)
 
-    categories = [(c.id, c.name) for c in Category.query.all()]
-    form.category.choices = categories
-
     if form.validate_on_submit():
         name = form.name.data
         price = form.price.data 

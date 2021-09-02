@@ -29,6 +29,19 @@ class Category(db.Model):
     def __repr__(self):
         f'<Category> {self.id}'
 
+class CategoryField(SelectField):
+    def iter_choices(self):
+        categories = [(c.id, c.name) for c in Category.query.all()]
+        for value, label in categories:
+            yield (value, label, self.coerce(value) == self.data)
+    
+    def pre_validate(self, form):
+        for v, _ in [(c.id, c.name) for c in Category.query.all()]:
+            if self.data == v:
+                break
+            else:
+                raise ValueError(self.gettext('Not a valid choice'))
+
 class NameForm(FlaskForm):
     name = StringField('Name', validators=[InputRequired()])
  
@@ -36,7 +49,7 @@ class ProductForm(NameForm):
     price = DecimalField('Price', validators=[
         InputRequired(), NumberRange(min=Decimal('0.0'))
     ])
-    category = SelectField('Category', validators=[InputRequired()], coerce=int)
+    category = CategoryField('Category', validators=[InputRequired()], coerce=int)
 
 class CategoryForm(NameForm):
     pass
