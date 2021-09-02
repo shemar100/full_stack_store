@@ -62,7 +62,7 @@ def check_duplicate_category(case_sensitive=True):
                 Category.name.like('%' + field.data + '%')
             ).first()
         if res:
-            raise ValidationError(f'Category named {field.data} already exists')
+            raise ValidationError('Category named {field.data} already exists')
     return _check_duplicate
 
 
