@@ -61,7 +61,7 @@ def create_product():
     categories = [(c.id, c.name) for c in Category.query.all()]
     form.category.choices = categories
 
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate():
         name = form.name.data
         price = form.price.data 
         category = Category.query.get_or_404(
@@ -71,7 +71,11 @@ def create_product():
         db.session.add(product) 
         db.session.commit() 
         flash(f'The product {name} has been created', 'success')
-        return redirect(url_for('catalog.product', id=product.id)) 
+        return redirect(url_for('catalog.product', id=product.id))
+
+    if form.errors:
+        flash(form.errors, 'danger')
+
     return render_template('product-create.html', form=form)
 
 @catalog.route('/product-search')
