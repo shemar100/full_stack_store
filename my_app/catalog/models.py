@@ -3,6 +3,7 @@ from flask_wtf import FlaskForm
 from decimal import Decimal
 from wtforms import StringField, DecimalField, SelectField, TextField
 from wtforms.validators import InputRequired, NumberRange, ValidationError
+from wtforms.widgets import html_params, Select, HTMLString
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -28,6 +29,20 @@ class Category(db.Model):
 
     def __repr__(self):
         f'<Category> {self.id}'
+
+class CustomCategoryInput(Select):
+    def __call__(self, field, **kwargs):
+        kwargs.setdefault('id', field.id)
+        html = []
+        for val, label, selected in field.iter_choices():
+            html.append(
+                '<input type="radio" %s> %s' % (
+                    html_params(
+                        name=field.name, value=val, checked=selected, **kwargs
+                    ), label
+                )
+            )
+        return HTMLString(' '.join(html))
 
 class CategoryField(SelectField):
     def iter_choices(self):
@@ -68,4 +83,5 @@ def check_duplicate_category(case_sensitive=True):
 
 class CategoryForm(NameForm):
     name = TextField('Name', validators=[InputRequired(), check_duplicate_category()])
+
 
