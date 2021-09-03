@@ -4,18 +4,12 @@
     <form class="form-horizontal"
     method="POST"
     action="{{ url_for('catalog.create_product') }}"
-    role="form">
-        <div class="form-group"> {{ form.name.label }} : {{
-        form.name() }}</div>
-        <div class="form-group">
-            <div class="form-group"> {{ form.price.label }} : {{
-        form.price() }}</div>
-        </div>
-        <div class="form-group">
-            <div class="form-group"> {{ form.category.label }} : {{
-        form.category() }}</div>
-            </div>
-        </div>
+    role="form"
+    enctype="multipart/form-data">
+        <div class="form-group"> {{ form.name.label }} : {{form.name() }}</div>
+        <div class="form-group"> {{ form.price.label }} : {{form.price() }}</div>
+        <div class="form-group"> {{ form.category.label }} : {{form.category() }}</div>
+        <div class="form-group"> {{ form.image.label }} : {{ form.image(style='display:inline;') }}</div>
         <button type="submit" class="btn btn-default">Submit</button>
     </form>
 </div>

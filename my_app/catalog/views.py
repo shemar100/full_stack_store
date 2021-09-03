@@ -1,14 +1,21 @@
 from flask import request, jsonify, Blueprint, render_template, flash, redirect
+from my_app import ALLOWED_EXTENSIONS
 from flask.helpers import url_for
 from flask_wtf import csrf
+from werkzeug.utils import secure_filename
 from my_app import db, app, redis
 from my_app.catalog.models import Product, Category
 from sqlalchemy.orm.util import join
 from my_app.catalog.models import ProductForm, CategoryForm
+import os
 #from functools import wraps
 
 catalog = Blueprint('catalog', __name__)
 
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.lower().rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 
 '''
@@ -56,7 +63,7 @@ def recent_products():
     
 @catalog.route('/product-create', methods=['POST','GET']) 
 def create_product():
-    form = ProductForm(csrf_enabled=False)
+    form = ProductForm(meta={'csrf':False})
 
     if form.validate_on_submit():
         name = form.name.data
@@ -64,7 +71,12 @@ def create_product():
         category = Category.query.get_or_404(
             form.category.data
         )
-        product = Product(name, price, category) 
+        image = form.image.data
+        if allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        product = Product(name, price, category, filename)
+         
         db.session.add(product) 
         db.session.commit() 
         flash(f'The product {name} has been created', 'success')
