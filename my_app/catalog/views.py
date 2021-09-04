@@ -106,7 +106,7 @@ def product_search(page=1):
 
 @catalog.route('/category-create', methods=['POST','GET']) 
 def create_category(): 
-    form = CategoryForm(csrf_enabled=False)
+    form = CategoryForm()
     if form.validate_on_submit():
         name = request.form.get('name') 
         category = Category(name) 
