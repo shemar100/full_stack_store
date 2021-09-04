@@ -2,7 +2,9 @@
  
 {% block container %} 
   <h1>Welcome to the Catalog Home</h1> 
-  <a href="{{ url_for('catalog.products') }}" id="catalog_link"> 
+  {% if session.username %}
+    <h3>Hey {{ session.username }}!!</h3>
+    <a href="{{ url_for('catalog.products') }}" id="catalog_link"> 
     Click here to see the catalog 
   </a> 
   <br/>
@@ -10,6 +12,12 @@
   <a href="{{ url_for('catalog.recent_products') }}">
   Recently visted.
   </a> 
+    <a href="{{ url_for('auth.logout') }}">Click here to logout</a>
+  {% else %}
+    Click here to <a href="{{ url_for('auth.login') }}">login</a> or
+    <a href="{{ url_for('auth.register') }}">register</a>
+  {% endif %}
+
 {% endblock %} 
  
 {% block script %} 

@@ -21,6 +21,9 @@ migrate = Migrate(app, db)
 app.secret_key = 'some_random_key'
 
 from my_app.catalog.views import catalog
+from my_app.auth.views import auth
+
 app.register_blueprint(catalog)
+app.register_blueprint(auth)
 
 db.create_all()
