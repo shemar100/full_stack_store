@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from redis import Redis
+from flask_wtf.csrf import CSRFProtect
 import os
 
 redis = Redis()
@@ -11,6 +12,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.realpath('.') +'/my_app/static/uploads'
+app.config['WTF_CSRF_SECRET_KEY']  = 'random key for form'
+CSRFProtect(app)
 db = SQLAlchemy(app)
 
 migrate = Migrate(app, db)

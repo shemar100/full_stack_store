@@ -63,7 +63,7 @@ def recent_products():
     
 @catalog.route('/product-create', methods=['POST','GET']) 
 def create_product():
-    form = ProductForm(meta={'csrf':False})
+    form = ProductForm()
 
     if form.validate_on_submit():
         name = form.name.data
