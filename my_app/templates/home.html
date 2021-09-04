@@ -9,10 +9,10 @@
   </a> 
   <br/>
   <br/>
-  <a href="{{ url_for('catalog.recent_products') }}">
-  Recently visted.
-  </a> 
-    <a href="{{ url_for('auth.logout') }}">Click here to logout</a>
+  <a href="{{ url_for('catalog.recent_products') }}">Recently visted.</a> 
+  <br/>
+  <br/>
+  <a href="{{ url_for('auth.logout') }}">Click here to logout</a>
   {% else %}
     Click here to <a href="{{ url_for('auth.login') }}">login</a> or
     <a href="{{ url_for('auth.register') }}">register</a>

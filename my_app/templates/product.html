@@ -1,10 +1,15 @@
 {% extends 'home.html' %}
 
 {% block container %}
-  <div class="top-pad">
+  {% if session.username %}
+    <div class="top-pad">
     <img src="{{ url_for('static', filename='uploads/' + product.image_path) }}"/>
     <h1>{{ product.name }}<small> {{ product.category.name }}</small></h1>
     <h4>{{ product.company }}</h4>
     <h3>{{ product.price }}</h3>
   </div>
+  {% else %}
+        Click here to <a href="{{ url_for('auth.login') }}">login</a> or
+        <a href="{{ url_for('auth.register') }}">register</a>
+  {% endif %}
 {% endblock %}
