@@ -4,6 +4,7 @@ from flask_migrate import Migrate
 from redis import Redis
 from flask_wtf.csrf import CSRFProtect
 import os
+from flask_login import LoginManager
 
 redis = Redis()
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -19,6 +20,10 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 app.secret_key = 'some_random_key'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'auth.login'
 
 from my_app.catalog.views import catalog
 from my_app.auth.views import auth

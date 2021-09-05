@@ -1,6 +1,6 @@
 {% extends 'home.html' %}
 {% block container %}
-    {% if session.username %}
+    {% if current_user.is_authenticated %}
         <div class="top-pad">
         <form class="form-horizontal"
             method="POST"

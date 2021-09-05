@@ -1,7 +1,7 @@
 {% extends 'home.html' %}
 
 {% block container %}
-  {% if session.username %}
+  {% if current_user.is_authenticated %}
     <div class="top-pad">
     {% for product in products.items %}
       <div class="well">

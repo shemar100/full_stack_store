@@ -2,11 +2,9 @@
  
 {% block container %} 
   <h1>Welcome to the Catalog Home</h1> 
-  {% if session.username %}
+  {% if current_user.is_authenticated %}
     <h3>Hey {{ session.username }}!!</h3>
-    <a href="{{ url_for('catalog.products') }}" id="catalog_link"> 
-    Click here to see the catalog 
-  </a> 
+    <a href="{{ url_for('catalog.products') }}" id="catalog_link"> Click here to see the catalog </a> 
   <br/>
   <br/>
   <a href="{{ url_for('catalog.recent_products') }}">Recently visted.</a> 
