@@ -64,7 +64,7 @@ def login():
             flash('Invalid username or password. Please try again.', 'danger')
             return render_template('login.html', form=form)
         
-        login_user(existing_user)
+        login_user(existing_user, remember=True)
         flash('You have successfully logged in.', 'success')
         return redirect(url_for('auth.home'))
 
