@@ -1,10 +1,12 @@
 from flask import request, render_template, flash, redirect, url_for, g, Blueprint
 from flask_login import current_user, login_user, logout_user, login_required
 from my_app import app, db, login_manager
-
 from my_app.auth.models import User, RegistrationForm, LoginForm
+from flask_dance.contrib.facebook import make_facebook_blueprint, facebook
 
 auth = Blueprint('auth', __name__)
+facebook_blueprint = make_facebook_blueprint(scope='email', redirect_to='auth.facebook_login')
+
 
 @login_manager.user_loader
 def load_user(id):
@@ -78,3 +80,20 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('auth.home'))
+
+
+@auth.route('/facebook-login')
+def facebook_login():
+    if not facebook.authorized:
+        return redirect(url_for('facebook.login'))
+
+    resp = facebook.get("/me?fields=name,email")
+
+    user = User.query.filter_by(username=resp.json()['email']).first()
+    if not user:
+        user = User(resp.json()['email'],'')
+        db.session.add(user)
+        db.session.commit()
+    login_user(user)
+    flash('Logged in as name=%s using Facebook login' % (resp.json()['name']), 'success')
+    return redirect(request.args.get('next', url_for('auth.home')))

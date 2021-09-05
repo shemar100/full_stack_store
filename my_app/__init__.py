@@ -14,6 +14,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.realpath('.') +'/my_app/static/uploads'
 app.config['WTF_CSRF_SECRET_KEY']  = 'random key for form'
+app.config["FACEBOOK_OAUTH_CLIENT_ID"] = 'key from developer account'
+app.config["FACEBOOK_OAUTH_CLIENT_SECRET"] = 'key from developer account'
+
+
 CSRFProtect(app)
 db = SQLAlchemy(app)
 
@@ -27,8 +31,10 @@ login_manager.login_view = 'auth.login'
 
 from my_app.catalog.views import catalog
 from my_app.auth.views import auth
+from my_app.auth.views import facebook_blueprint
 
 app.register_blueprint(catalog)
 app.register_blueprint(auth)
+app.register_blueprint(facebook_blueprint)
 
 db.create_all()
