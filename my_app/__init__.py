@@ -5,7 +5,7 @@ from redis import Redis
 from flask_wtf.csrf import CSRFProtect
 import os
 from flask_login import LoginManager
-
+import ldap3
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -20,6 +20,7 @@ app.config["FACEBOOK_OAUTH_CLIENT_SECRET"] = 'key from developer account'
 app.config["GOOGLE_OAUTH_CLIENT_ID"] = "key from google console"
 app.config["GOOGLE_OAUTH_CLIENT_SECRET"] = "key from google console"
 app.config["OAUTHLIB_RELAX_TOKEN_SCOPE"] = True
+
 
 
 CSRFProtect(app)

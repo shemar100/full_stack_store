@@ -1,4 +1,4 @@
-from flask import request, jsonify, Blueprint, render_template, flash, redirect
+from flask import request, jsonify, Blueprint, render_template, flash, redirect, abort
 from my_app import ALLOWED_EXTENSIONS
 from flask.helpers import url_for
 from flask_wtf import csrf
@@ -8,6 +8,8 @@ from my_app.catalog.models import Product, Category
 from sqlalchemy.orm.util import join
 from my_app.catalog.models import ProductForm, CategoryForm
 import os
+import json
+from flask.views import MethodView
 #from functools import wraps
 
 catalog = Blueprint('catalog', __name__)
@@ -145,3 +147,45 @@ def category(id):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+class ProductView(MethodView):
+    def get(self, id=None, page=1):
+        if not id:
+            products = Product.query.paginate(page, 10).items()
+            res = {}
+            for product in products:
+                res[product.id] = {
+                    'name': product.name,
+                    'price': product.price,
+                    'category': product.category.name
+                }
+        else:
+            product = Product.query.filter_by(id=id).first()
+            if not product:
+                abort(404)
+            res = json.dumps({
+                'name': product.name,
+                'price': product.price,
+                'category': product.category.name
+            })
+        return res
+    
+    def post(self):
+        # Create a new product
+        # Return the ID/Object of newly created product
+        return
+    
+    def put(self, id):
+        # Update the product corresponding provided id
+        # Return the the json corresponding updated product
+        return
+
+    def delete(self, id):
+        # Delete the product corresponding provided id.
+        # Return success or errors message
+        return
+    
+product_view = ProductView.as_view('product_view')
+app.add_url_rule('/products/', view_func=product_view, methods=['GET', 'POST'])
+app.add_url_rule('/products/<int:id>', view_func=product_view, methods=['GET','PUT', 'DELETE'])
+
