@@ -5,7 +5,7 @@ from redis import Redis
 from flask_wtf.csrf import CSRFProtect
 import os
 from flask_login import LoginManager
-import ldap3
+
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
@@ -23,11 +23,13 @@ app.config["OAUTHLIB_RELAX_TOKEN_SCOPE"] = True
 
 
 
-CSRFProtect(app)
+csrf = CSRFProtect(app)
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 redis = Redis()
+#api = Api(app, decorators=[csrf.exempt])
+
 
 app.secret_key = 'some_random_key'
 
